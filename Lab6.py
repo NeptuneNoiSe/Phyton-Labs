@@ -60,4 +60,5 @@ while count < stepCount:
         print('Ошибка: Максимальное значение меньше или равно минимальному')
         break
 
+print ('Результат:')       
 print(resultstorage.Result())
