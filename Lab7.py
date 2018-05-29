@@ -1,6 +1,5 @@
 # Лабораторная работа №7 Вариант 2.
 from math import tan, acosh
-import pickle
 print('Здравствуйте')
 
 # Ввод значений
@@ -13,45 +12,24 @@ if stepCount <= 0:
     exit()
 
 # Массив значений Функции
-class ResultStorage:
-   massiveG = []
-   massiveF = []
-   massiveY = []
-
-   def add_G(self, result):
-        self.massiveG.append(result)
-
-   def add_F(self, result):
-        self.massiveF.append(result)
-
-   def add_Y(self, result):
-        self.massiveY.append(result)
-
-   def clear(self):
-      self.massiveG = []
-      self.massiveF = []
-      self.massiveY = []
-
-   def Result (self):
-       print('Массив значений G: ' + str(self.massiveG))
-       print('Массив значений F: ' + str(self.massiveF))
-       print('Массив значений Y: ' + str(self.massiveY))
-
-resultstorage = ResultStorage ()
+massiveStorage = {'G':[], 'F':[], 'Y':[]}
 
 def calc(a, x):
     try:
-       resultstorage.add_G((7 * ((-15 * a**2) + (22 * a * x) + (5 * x**2))) / ((4 * a**2) + (7 * a * x) + (3 * x**2)))
+       g=(7 * ((-15 * a**2) + (22 * a * x) + (5 * x**2))) / ((4 * a**2) + (7 * a * x) + (3 * x**2))
+       massiveStorage['G'].append(g)
     except ZeroDivisionError:
         pass
 
     try:
-       resultstorage.add_F (-tan((4 * a**2) - (3 * a * x) - (7 * x**2)))
+       f = -tan((4 * a**2) - (3 * a * x) - (7 * x**2))
+       massiveStorage['F'].append(f)
     except ValueError:
         pass
 
     try:
-       resultstorage.add_Y ((acosh((-7 * a**2) + (20 * a * x) + (3 * x**2) + 1)))
+       y = acosh((-7 * a**2) + (20 * a * x) + (3 * x**2) + 1)
+       massiveStorage['Y'].append(y)
     except ValueError:
          pass
 
@@ -66,23 +44,16 @@ while count < stepCount:
         print('Ошибка: Максимальное значение меньше или равно минимальному')
         break
 
-# Модуль Picle Запись и чтение файла
+# Запись лога
+with open('log.txt', 'w') as file:
+    for key, value in massiveStorage.items():
+        file.write('{} = {}\n' .format(key, value))
 
-print ('Создание и запись массива в файл')
-f = open(r'massive.txt', 'wb')
-pickle.dump(resultstorage.massiveG, f)
-pickle.dump(resultstorage.massiveF, f)
-pickle.dump(resultstorage.massiveY, f)
-f.close()
+# Очистка массива
+massiveStorage = {}
 
-print ('Очистка структур массива')
-resultstorage.clear()
-
-print ('Открытие файла масcива структур')
-f = open(r'massive.txt', 'rb')
-resultstorage.massiveG = pickle.load(f)
-resultstorage.massiveF = pickle.load(f)
-resultstorage.massiveY = pickle.load(f)
-
-print ('Результат:')
-print(resultstorage.Result())
+# Чтение лога
+with open('log.txt', 'r') as file:
+    for i in file.readlines():
+        key, value = i.strip().split('=')
+        print(key, '=', value)
